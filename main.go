@@ -105,4 +105,9 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	for {
+		log.Info().Msg("Hello all Here! Task-Tracker On Air!")
+		time.Sleep(3 * time.Second)
+	}
 }
