@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	"os"
-	"time"
 )
 
 type Task struct {
@@ -19,28 +21,78 @@ type Task struct {
 
 const taskFile = "tasks.json"
 
+var addCmd = &cobra.Command{
+	Use:   "add [description]",
+	Short: "Add a new task",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		description := args[0]
+		addTask(description)
+	},
+}
+
+func addTask(description string) {
+	tasks := loadTasks()
+
+	newTask := Task{
+		ID:          len(tasks) + 1,
+		Description: description,
+		Status:      "todo",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
+
+	tasks = append(tasks, newTask)
+	saveTasks(tasks)
+
+	log.Info().Msgf("Task added successfully (ID: %d)", newTask.ID)
+}
+
+func loadTasks() []Task {
+	file, err := os.Open(taskFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return []Task{}
+		}
+		log.Fatal().Err(err).Msg("Could not open tasks file")
+	}
+	defer file.Close()
+
+	var tasks []Task
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&tasks)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Could not decode tasks")
+	}
+	return tasks
+}
+
+func saveTasks(tasks []Task) {
+	file, err := os.Create(taskFile)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Could not create tasks file")
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(tasks)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Could not encode tasks")
+	}
+}
+
 func main() {
-
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-
-	log.Info().Msg("Welcome to the Track-Tracker repo")
 
 	rootCmd := &cobra.Command{
 		Use:   "task-cli",
 		Short: "Task Tracker CLI for managing your tasks",
 	}
 
-	rootCmd.AddCommand()
+	rootCmd.AddCommand(addCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
-	for {
-		log.Info().Msg("Scanning....")
-
-		time.Sleep(3 * time.Second)
-	}
-
 }
