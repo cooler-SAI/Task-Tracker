@@ -56,7 +56,12 @@ func loadTasks() []Task {
 		}
 		log.Fatal().Err(err).Msg("Could not open tasks file")
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 
 	var tasks []Task
 	decoder := json.NewDecoder(file)
@@ -72,7 +77,12 @@ func saveTasks(tasks []Task) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Could not create tasks file")
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 
 	encoder := json.NewEncoder(file)
 	err = encoder.Encode(tasks)
