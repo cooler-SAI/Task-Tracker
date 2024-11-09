@@ -57,7 +57,8 @@ func TestSaveTasks(t *testing.T) {
 	loadedTasks := loadTasks()
 
 	assert.Equal(t, len(tasks), len(loadedTasks), "Saved and loaded task count should match")
-	assert.Equal(t, tasks[0].Description, loadedTasks[0].Description, "Loaded task description should match")
+	assert.Equal(t, tasks[0].Description, loadedTasks[0].Description,
+		"Loaded task description should match")
 	log.Info().Msg("TestSaveTasks passed")
 }
 
