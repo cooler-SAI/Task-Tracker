@@ -80,14 +80,18 @@ func saveTasks(tasks []Task) {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-
+			log.Error().Err(err).Msg("Error closing tasks file")
 		}
 	}(file)
 
-	encoder := json.NewEncoder(file)
-	err = encoder.Encode(tasks)
+	data, err := json.MarshalIndent(tasks, "", "    ")
 	if err != nil {
-		log.Fatal().Err(err).Msg("Could not encode tasks")
+		log.Fatal().Err(err).Msg("Could not format tasks to JSON")
+	}
+
+	_, err = file.Write(data)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Could not write tasks to file")
 	}
 }
 
@@ -106,8 +110,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	for {
+	/*for {
 		log.Info().Msg("Hello all Here! Task-Tracker On Air!")
 		time.Sleep(3 * time.Second)
-	}
+	}*/
 }
