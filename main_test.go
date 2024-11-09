@@ -31,7 +31,6 @@ func TestAddTask(t *testing.T) {
 	log.Info().Msg("TestAddTask passed")
 }
 
-// Test loading tasks from an empty file
 func TestLoadTasksEmptyFile(t *testing.T) {
 	log.Info().Msg("Starting TestLoadTasksEmptyFile")
 
