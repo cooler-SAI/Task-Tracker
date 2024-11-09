@@ -66,7 +66,8 @@ func loadTasks() []Task {
 	var tasks []Task
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&tasks)
-	if err != nil {
+
+	if err != nil && err.Error() != "EOF" {
 		log.Fatal().Err(err).Msg("Could not decode tasks")
 	}
 	return tasks
