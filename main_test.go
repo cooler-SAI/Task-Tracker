@@ -11,11 +11,9 @@ import (
 )
 
 func init() {
-	// Set up Zerolog to output to Stderr for testing
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 }
 
-// Test for adding a new task
 func TestAddTask(t *testing.T) {
 
 	log.Info().Msg("Starting TestAddTask")
@@ -34,7 +32,6 @@ func TestAddTask(t *testing.T) {
 func TestLoadTasksEmptyFile(t *testing.T) {
 	log.Info().Msg("Starting TestLoadTasksEmptyFile")
 
-	// Clear file
 	err := os.WriteFile(taskFile, []byte(""), 0644)
 	assert.NoError(t, err, "Error clearing tasks file")
 
@@ -43,11 +40,9 @@ func TestLoadTasksEmptyFile(t *testing.T) {
 	log.Info().Msg("TestLoadTasksEmptyFile passed")
 }
 
-// Test saving tasks to the file
 func TestSaveTasks(t *testing.T) {
 	log.Info().Msg("Starting TestSaveTasks")
 
-	// Prepare a task list
 	tasks := []Task{
 		{
 			ID:          1,
@@ -58,7 +53,6 @@ func TestSaveTasks(t *testing.T) {
 		},
 	}
 
-	// Save and reload to verify
 	saveTasks(tasks)
 	loadedTasks := loadTasks()
 
@@ -67,18 +61,17 @@ func TestSaveTasks(t *testing.T) {
 	log.Info().Msg("TestSaveTasks passed")
 }
 
-// Test that a new task increments the ID
 func TestAddTaskIDIncrement(t *testing.T) {
 	log.Info().Msg("Starting TestAddTaskIDIncrement")
 
-	addTask("First task")
+	addTask("First Task")
 	tasks := loadTasks()
 	initialID := tasks[len(tasks)-1].ID
 
-	addTask("Second task")
+	addTask("Second Task")
 	tasks = loadTasks()
 	newID := tasks[len(tasks)-1].ID
-
-	assert.Equal(t, initialID+1, newID, "Task ID should increment with each new task")
+	assert.Equal(t, initialID+1, newID, "New task ID should match")
 	log.Info().Msg("TestAddTaskIDIncrement passed")
+
 }
