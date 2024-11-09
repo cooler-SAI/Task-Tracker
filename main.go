@@ -111,8 +111,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	/*for {
+	for {
 		log.Info().Msg("Hello all Here! Task-Tracker On Air!")
+		log.Info().Msg("For use this app run in cmd: .\\go_build_Task_Tracker.exe add <Message> without <>")
 		time.Sleep(3 * time.Second)
-	}*/
+	}
 }
